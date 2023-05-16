@@ -1,0 +1,49 @@
+﻿@page "/getdata"
+@using projectv2.Shared.Models;
+@inject HttpClient Http;
+
+<h1>Get Data</h1>
+
+<p>This component demonstrates fetching data from the Database.</p>
+<button @onclick="Get">Accounts Data</button> <br />
+
+@if (accounts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Full Name</th>
+                <th>Gender</th>
+                <th>Password</th>
+                <th>Phone</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var account in accounts)
+            {
+                <tr>
+                    <td>@account.Email</td>
+                    <td>@account.FirstName  @account.LastName</td>
+                    <td>@account.Gender</td>
+                    <td>@account.Password</td>
+                    <td>@account.PhoneNumber</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    Accounts[]? accounts;
+
+    async void Get()
+    {
+        accounts = await Http.GetFromJsonAsync<Accounts[]>("/accounts");
+        StateHasChanged();
+    }
+}

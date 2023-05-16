@@ -1,0 +1,113 @@
+﻿@page "/Signup"
+@using projectv2.Shared.Models;
+@layout Custom
+@inject HttpClient Http
+
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="~/css/style.css" rel="stylesheet" />
+    <link href="~/css/header-footer.css" rel="stylesheet" />
+    <link href="~/css/login.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="body-con">
+        <div id="login-con">
+            <div id="card-logo">
+                <img src="Images/logo.png" alt="">
+            </div>
+            <div id="card-body">
+                <EditForm Model="@frm" OnValidSubmit="@HandleValidSubmit" class="f-set" style="border: none;">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="field">
+                        <InputText @bind-Value="frm.FirstName" placeholder="First Name" />
+                    </div>
+                    <div class="field">
+                        <InputText @bind-Value="frm.LastName" placeholder="Last Name" />
+                    </div>
+                    <div class="field">
+                        <InputText @bind-Value="frm.Email" placeholder="Email" />
+                    </div>
+                    <div class="field">
+                        <InputText type="password" @bind-Value="frm.Password" placeholder="Password" />
+                    </div>
+                    <div class="field">
+                        <InputText type="password" @bind-Value="frm.ConfirmPassword" placeholder="Confirm Password" />
+                    </div>
+                    <div class="field">
+                        <InputNumber @bind-Value="frm.PhoneNumber" ParsingErrorMessage="Must be Interger" placeholder="Phone"/>
+                    </div>
+                    <div id="gender_box">
+                        <label id="label_gender">Select Gender:</label>
+                        <InputRadioGroup @bind-Value="frm.Gender">
+                            <InputRadio Value="@("Male")" class="gender_input" /> Male
+                            <InputRadio Value="@("Female")" class="gender_input" />Female
+                            <InputRadio Value="@("Others")" class="gender_input" />Others<br />
+                        </InputRadioGroup>
+                    </div>
+                    <div id="check">
+                        <label id="label_gender">Accept Tems & Conditions:</label>
+                        <InputCheckbox class="gender_input" @bind-Value="frm.AgreeToTerms" placeholder="Agree" />
+                    </div>
+                    <div id="f-btn" class="field"><button>Signup</button></div>
+                </EditForm>
+            </div>
+            <p id="cr-acc"><a href="#">Create Account</a></p>
+        </div>
+    </div>
+    <p>@mess</p>
+</body>
+
+<style>
+    #check{
+        margin-top: 8px;
+    }
+    #login-con{
+        width: 35%;
+        height: auto;
+    }
+    #gender_box{
+        display: block;
+    }
+    #card-logo{
+        height: 150px;
+    }
+
+    #card-logo img{
+        height: 180%;
+    }
+    .gender_input{
+        position: relative;
+        top: 5px;
+        width: 10%;
+        height: 20px;
+    }
+
+    #label_gender{
+        margin-left: 2%;
+    }
+
+    .f-set{
+        margin: 4%;
+    }
+</style>
+
+@code{
+    Accounts frm = new Accounts();
+    String mess = "";
+
+    async void HandleValidSubmit()
+    {
+        var responce = await Http.PostAsJsonAsync<Accounts>("/accounts", frm);
+        if (responce.IsSuccessStatusCode)
+        {
+            mess = "Congrats";
+        }
+        else{
+            mess = "NAAH";
+        }
+        StateHasChanged();
+    }
+}
